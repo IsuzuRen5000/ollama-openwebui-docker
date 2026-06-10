@@ -106,8 +106,8 @@ volumes:
 ### 下載專案
 
 ```bash
-git clone https://github.com/<your-account>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/IsuzuRen5000/ollama-openwebui-docker.git
+cd ollama-openwebui-docker.git
 ```
 
 ### 啟動容器
