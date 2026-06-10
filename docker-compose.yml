@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    networks:
+      - ollama-net
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    restart: always
+    command: bash start.sh --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - BIND_HOST=0.0.0.0
+      - USE_CPU_ONLY=false
+      - LOAD_8BIT=false
+      - MAX_TOKENS=1024
+    volumes:
+      - webui_data:/app/backend/data
+      - ./models:/app/backend/data/models
+    depends_on:
+      - ollama
+    networks:
+      - ollama-net
+
+networks:
+  ollama-net:
+
+volumes:
+  ollama_data:
+  webui_data:
